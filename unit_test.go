@@ -5,6 +5,5 @@ import (
 )
 
 func TestUnit(t *testing.T) {
-	var numDev uint
-	CreateDeviceInfoList(&numDev)
+	CreateDeviceInfoList()
 }
