@@ -32,6 +32,15 @@ func OpenEx(s string, flags C.uint) (*Handle, Status) {
 	return &Handle{h}, status
 }
 
+// OpenBySerialNumber shorthand for OpenEx(sn, FT_OPEN_BY_SERIAL_NUMBER)
+func OpenBySerialNumber(sn string) (*Handle, Status) { return OpenEx(sn, FT_OPEN_BY_SERIAL_NUMBER) }
+
+// OpenByDescription shorthand for OpenEx(desc, FT_OPEN_BY_DESCRIPTION)
+func OpenByDescription(desc string) (*Handle, Status) { return OpenEx(desc, FT_OPEN_BY_DESCRIPTION) }
+
+// OpenByLocation shorthand for OpenEx(loc, FT_OPEN_BY_LOCATION)
+func OpenByLocation(loc string) (*Handle, Status) { return OpenEx(loc, FT_OPEN_BY_LOCATION) }
+
 // SetDataCharacteristics Set data characteristics. Tips: call immediately after Open
 func (h *Handle) SetDataCharacteristics(wordLength, stopBits, parity C.uchar) error {
 	status := Status(C.FT_SetDataCharacteristics(h.handle, wordLength, stopBits, parity))
