@@ -22,12 +22,21 @@ func GetDeviceInfoList() ([]Device, Status) {
 	out := make([]Device, ndev)
 	var n C.uint
 	n = C.uint(ndev)
-	status = Status(C.FT_GetDeviceInfoList((*C.FT_DEVICE_LIST_INFO_NODE)(&out[0]), &n))
+	status = Status(C.FT_GetDeviceInfoList((*C.FT_DEVICE_LIST_INFO_NODE)(&out[0].device), &n))
 	return out, status
 }
 
 // GetDeviceInfoDetail This function returns an entry from the device information list.
 func GetDeviceInfoDetail(index int, pDev *Device) Status {
 	cindex := C.uint(index)
-	return Status(C.FT_GetDeviceInfoDetail(cindex, &pDev.Flags, &pDev.Type, &pDev.ID, &pDev.LocId, (C.PVOID)(&pDev.SerialNumber[0]), (C.PVOID)(&pDev.Description[0]), &pDev.ftHandle))
+	return Status(C.FT_GetDeviceInfoDetail(
+		cindex,
+		&pDev.device.Flags,
+		&pDev.Type,
+		&pDev.ID,
+		&pDev.LocId,
+		(C.PVOID)(&pDev.device.SerialNumber[0]),
+		(C.PVOID)(&pDev.device.Description[0]),
+		&pDev.ftHandle,
+	))
 }

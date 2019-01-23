@@ -3,17 +3,20 @@ package ftdi
 // #include "ftd2xx.h"
 import "C"
 
-type Device C.FT_DEVICE_LIST_INFO_NODE
+type device C.FT_DEVICE_LIST_INFO_NODE
+type Device struct {
+	device
+}
 
-func (d Device) Flag() int {
-	return int(d.Flags)
+func (d Device) Flags() int {
+	return int(d.device.Flags)
 }
-func (d Device) SerialNum() string {
-	return C.GoString(&d.SerialNumber[0])
+func (d Device) SerialNumber() string {
+	return C.GoString(&d.device.SerialNumber[0])
 }
-func (d Device) Desc() string {
-	return C.GoString(&d.Description[0])
+func (d Device) Description() string {
+	return C.GoString(&d.device.Description[0])
 }
 func (d Device) String() string {
-	return d.SerialNum()
+	return d.SerialNumber()
 }
