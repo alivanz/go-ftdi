@@ -3,7 +3,10 @@ package ftdi
 // #include "ftd2xx.h"
 // #include <stdlib.h>
 import "C"
-import "unsafe"
+import (
+	"time"
+	"unsafe"
+)
 
 // Handle D2XX handle
 type Handle struct{ handle C.FT_HANDLE }
@@ -53,6 +56,15 @@ func (h *Handle) SetDataCharacteristics(wordLength, stopBits, parity C.uchar) er
 // SetBaudRate Set BAUD rate
 func (h *Handle) SetBaudRate(baud int) Status {
 	return Status(C.FT_SetBaudRate(h.handle, C.uint(baud)))
+}
+
+func inMilis(d time.Duration) C.uint {
+	return C.uint(d / time.Millisecond)
+}
+
+// SetTimeouts This function sets the read and write timeouts for the device.
+func (h *Handle) SetTimeouts(rTimeout, wTimeout time.Duration) Status {
+	return Status(C.FT_SetTimeouts(h.handle, inMilis(rTimeout), inMilis(wTimeout)))
 }
 
 // Close Close handle
