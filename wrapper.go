@@ -1,5 +1,8 @@
 package ftdi
 
+// #ifdef _WIN32
+// #define FTD2XX_STATIC
+// #endif
 // #include "ftd2xx.h"
 import "C"
 
