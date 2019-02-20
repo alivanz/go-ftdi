@@ -24,7 +24,7 @@ func Open(index int) (*Handle, Status) {
 // OpenEx Open the specified device and return a handle that will be used for subsequent accesses. The device can be specified by its serial number, device description or location.
 //
 // This function can also be used to open multiple devices simultaneously. Multiple devices can be specified by serial number, device description or location ID (location information derived from the physical location of a device on USB). Location IDs for specific USB ports can be obtained using the utility USBView and are given in hexadecimal format. Location IDs for devices connected to a system can be obtained by calling FT_GetDeviceInfoList or FT_ListDevices with the appropriate flags.
-func OpenEx(s string, flags C.uint) (*Handle, Status) {
+func OpenEx(s string, flags C.DWORD) (*Handle, Status) {
 	pvArg1 := C.CString(s)
 	defer C.free(unsafe.Pointer(pvArg1))
 	var h C.FT_HANDLE
@@ -55,11 +55,11 @@ func (h *Handle) SetDataCharacteristics(wordLength, stopBits, parity C.uchar) er
 
 // SetBaudRate Set BAUD rate
 func (h *Handle) SetBaudRate(baud int) Status {
-	return Status(C.FT_SetBaudRate(h.handle, C.uint(baud)))
+	return Status(C.FT_SetBaudRate(h.handle, C.DWORD(baud)))
 }
 
-func inMilis(d time.Duration) C.uint {
-	return C.uint(d / time.Millisecond)
+func inMilis(d time.Duration) C.DWORD {
+	return C.DWORD(d / time.Millisecond)
 }
 
 // SetTimeouts This function sets the read and write timeouts for the device.
@@ -81,8 +81,8 @@ func (h *Handle) Write(p []byte) (int, error) {
 	if len(p) == 0 {
 		return 0, nil
 	}
-	var n C.uint
-	status := Status(C.FT_Write(h.handle, (C.PVOID)(&p[0]), C.uint(len(p)), &n))
+	var n C.DWORD
+	status := Status(C.FT_Write(h.handle, (C.LPVOID)(&p[0]), C.DWORD(len(p)), &n))
 	if status != FT_OK {
 		return int(n), status
 	}
@@ -94,8 +94,8 @@ func (h *Handle) Read(p []byte) (int, error) {
 	if len(p) == 0 {
 		return 0, nil
 	}
-	var n C.uint
-	status := Status(C.FT_Read(h.handle, (C.PVOID)(&p[0]), C.uint(len(p)), &n))
+	var n C.DWORD
+	status := Status(C.FT_Read(h.handle, (C.LPVOID)(&p[0]), C.DWORD(len(p)), &n))
 	if status != FT_OK {
 		return int(n), status
 	}

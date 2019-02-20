@@ -8,7 +8,7 @@ import "C"
 
 // CreateDeviceInfoList This function builds a device information list and returns the number of D2XX devices connected to the system. The list contains information about both unopen and open devices.
 func CreateDeviceInfoList() (int, Status) {
-	var n C.uint
+	var n C.DWORD
 	status := Status(C.FT_CreateDeviceInfoList(&n))
 	return int(n), status
 }
@@ -23,23 +23,22 @@ func GetDeviceInfoList() ([]Device, Status) {
 		return nil, status
 	}
 	out := make([]Device, ndev)
-	var n C.uint
-	n = C.uint(ndev)
+	n := C.DWORD(ndev)
 	status = Status(C.FT_GetDeviceInfoList((*C.FT_DEVICE_LIST_INFO_NODE)(&out[0].device), &n))
 	return out, status
 }
 
 // GetDeviceInfoDetail This function returns an entry from the device information list.
 func GetDeviceInfoDetail(index int, pDev *Device) Status {
-	cindex := C.uint(index)
+	cindex := C.DWORD(index)
 	return Status(C.FT_GetDeviceInfoDetail(
 		cindex,
 		&pDev.device.Flags,
 		&pDev.Type,
 		&pDev.ID,
 		&pDev.LocId,
-		(C.PVOID)(&pDev.device.SerialNumber[0]),
-		(C.PVOID)(&pDev.device.Description[0]),
+		(C.LPVOID)(&pDev.device.SerialNumber[0]),
+		(C.LPVOID)(&pDev.device.Description[0]),
 		&pDev.ftHandle,
 	))
 }
