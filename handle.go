@@ -82,7 +82,7 @@ func (h *Handle) Write(p []byte) (int, error) {
 		return 0, nil
 	}
 	var n C.DWORD
-	status := Status(C.FT_Write(h.handle, (C.LPVOID)(&p[0]), C.DWORD(len(p)), &n))
+	status := Status(C.FT_Write(h.handle, C.LPVOID(&p[0]), C.DWORD(len(p)), &n))
 	if status != FT_OK {
 		return int(n), status
 	}
@@ -95,7 +95,7 @@ func (h *Handle) Read(p []byte) (int, error) {
 		return 0, nil
 	}
 	var n C.DWORD
-	status := Status(C.FT_Read(h.handle, (C.LPVOID)(&p[0]), C.DWORD(len(p)), &n))
+	status := Status(C.FT_Read(h.handle, C.LPVOID(&p[0]), C.DWORD(len(p)), &n))
 	if status != FT_OK {
 		return int(n), status
 	}
