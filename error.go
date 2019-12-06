@@ -55,6 +55,13 @@ const (
 	FT_DEVICE_LIST_NOT_READY       = Status(C.FT_DEVICE_LIST_NOT_READY)
 )
 
+func errorStatus(status C.uint) error {
+	if status == C.FT_OK {
+		return nil
+	}
+	return Status(status)
+}
+
 func (s Status) Error() string {
 	return C.GoString(C.status_string(C.FT_STATUS(s)))
 }

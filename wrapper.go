@@ -7,31 +7,35 @@ package ftdi
 import "C"
 
 // CreateDeviceInfoList This function builds a device information list and returns the number of D2XX devices connected to the system. The list contains information about both unopen and open devices.
-func CreateDeviceInfoList() (int, Status) {
+func CreateDeviceInfoList() (int, error) {
 	var n C.DWORD
-	status := Status(C.FT_CreateDeviceInfoList(&n))
-	return int(n), status
+	if err := errorStatus(C.FT_CreateDeviceInfoList(&n)); err != nil {
+		return 0, err
+	}
+	return int(n), nil
 }
 
 // GetDeviceInfoList This function returns a device information list and the number of D2XX devices in the list.
-func GetDeviceInfoList() ([]Device, Status) {
-	ndev, status := CreateDeviceInfoList()
-	if status != FT_OK {
-		return nil, status
+func GetDeviceInfoList() ([]Device, error) {
+	ndev, err := CreateDeviceInfoList()
+	if err != nil {
+		return nil, err
 	}
 	if ndev <= 0 {
-		return nil, status
+		return nil, nil
 	}
 	out := make([]Device, ndev)
 	n := C.DWORD(ndev)
-	status = Status(C.FT_GetDeviceInfoList((*C.FT_DEVICE_LIST_INFO_NODE)(&out[0].device), &n))
-	return out, status
+	if err := errorStatus(C.FT_GetDeviceInfoList((*C.FT_DEVICE_LIST_INFO_NODE)(&out[0].device), &n)); err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 // GetDeviceInfoDetail This function returns an entry from the device information list.
-func GetDeviceInfoDetail(index int, pDev *Device) Status {
+func GetDeviceInfoDetail(index int, pDev *Device) error {
 	cindex := C.DWORD(index)
-	return Status(C.FT_GetDeviceInfoDetail(
+	return errorStatus(C.FT_GetDeviceInfoDetail(
 		cindex,
 		&pDev.device.Flags,
 		&pDev.Type,

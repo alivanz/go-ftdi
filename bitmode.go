@@ -26,12 +26,12 @@ const (
 // mask:  Required value for bit mode mask. This sets up which bits are inputs and outputs. A bit value of 0 sets the corresponding pin to an input, a bit value of 1 sets the corresponding pin to an output.
 //        In the case of CBUS Bit Bang, the upper nibble of this value controls which pins are inputs and outputs, while the lower nibble controls which of the outputs are high and low.
 // mode:  Mode value.
-func (h *Handle) SetBitMode(mask, mode byte) Status {
-	return Status(C.FT_SetBitMode(h.handle, C.UCHAR(mask), C.UCHAR(mode)))
+func (h *Handle) SetBitMode(mask, mode byte) error {
+	return errorStatus(C.FT_SetBitMode(h.handle, C.UCHAR(mask), C.UCHAR(mode)))
 }
 
 // GetBitMode Gets the instantaneous value of the data bus.
-func (h *Handle) GetBitMode() (byte, Status) {
+func (h *Handle) GetBitMode() (byte, error) {
 	var mode C.UCHAR
-	return byte(mode), Status(C.FT_GetBitMode(h.handle, &mode))
+	return byte(mode), errorStatus(C.FT_GetBitMode(h.handle, &mode))
 }
